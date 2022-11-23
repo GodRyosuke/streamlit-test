@@ -35,5 +35,19 @@ services:
     # srcディレクトリ内のファイルをコンテナ内の~/var/www/html配下にマウント
     volumes:
       - "../db:/var/lib/mysql"
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    environment:
+      - PMA_ARBITRARY=1
+      - PMA_HOST=db #mysqlサービス名を指定
+      - PMA_USER=wander
+      - PMA_PASSWORD=password
+    links:
+      - db
+    ports:
+      - 4040:80
+    volumes:
+      - ./phpmyadmin/sessions:/sessions
     # tty: true
     # restart: always

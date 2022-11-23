@@ -1,0 +1,39 @@
+version: '3'
+
+services:
+  asdf:
+    image: streamlit:wander
+    hostname: wander-server
+    container_name: asdf
+    volumes: 
+      - ../:/root/ws
+    expose:
+      - "8501"
+    ports:
+      - "8888:8501"
+    working_dir: "/root/ws"
+    tty: true
+    restart: always
+
+  db:
+    # コンテナ名
+    container_name: "db"
+    # コンテナの作成に使用するDockerfileのパス
+    build:
+      dockerfile: "./mysql.Dockerfile"
+    # ホスト側のポート:コンテナ側のポートを指定
+    expose:
+      - "3306"
+    ports:
+      - "3306:3306"
+    # 環境変数の指定
+    environment:
+      - "MYSQL_ROOT_PASSWORD=password"
+      - "MYSQL_DATABASE=streamlit_database"
+      - "MYSQL_USER=wander"
+      - "MYSQL_PASSWORD=password"
+    # srcディレクトリ内のファイルをコンテナ内の~/var/www/html配下にマウント
+    volumes:
+      - "../db:/var/lib/mysql"
+    # tty: true
+    # restart: always

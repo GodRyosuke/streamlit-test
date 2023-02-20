@@ -1,20 +1,15 @@
 version: '3'
 
-services:
-  asdf:
-    image: streamlit:wander
-    hostname: wander-server
-    container_name: asdf
-    volumes: 
-      - ../:/root/ws
-    expose:
-      - "8501"
-    ports:
-      - "8888:8501"
-    working_dir: "/root/ws"
-    tty: true
-    restart: always
+networks: 
+  python_network:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+       - subnet: 192.168.2.0/24
+       - gateway: 192.168.2.1
 
+services:
   db:
     # コンテナ名
     container_name: "db"
@@ -26,6 +21,10 @@ services:
       - "3306"
     ports:
       - "3306:3306"
+      # - target: 3306
+      # - published: 3306
+      # - protocol: tcp
+      # - mode: host
     # 環境変数の指定
     environment:
       - "MYSQL_ROOT_PASSWORD=password"
@@ -35,6 +34,31 @@ services:
     # srcディレクトリ内のファイルをコンテナ内の~/var/www/html配下にマウント
     volumes:
       - "../db:/var/lib/mysql"
+    networks:
+      python_network:
+        pv4_address: 192.168.2.2    
+
+  asdf:
+    # image: streamlit:wander
+    hostname: wander-server
+    container_name: asdf
+    build:
+      dockerfile: "Dockerfile"
+    volumes: 
+      - ../:/root/ws
+    expose:
+      - "8501"
+    ports:
+      - "8888:8501"
+    links:
+      - db
+    depends_on:
+      - db
+    working_dir: "/root/ws"
+    tty: true
+    restart: always
+    networks:
+      - python_network
 
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
@@ -49,5 +73,5 @@ services:
       - 4040:80
     volumes:
       - ./phpmyadmin/sessions:/sessions
-    # tty: true
-    # restart: always
+    tty: true
+    restart: always

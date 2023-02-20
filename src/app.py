@@ -1,9 +1,21 @@
 import streamlit as st
+import mysql.connector
 
+connection = connection = mysql.connector.connect(host='127.0.0.1',
+                                                  user='wander',
+                                                  password='password',
+                                                  database='streamlit_database')
+# mysqlとの接続
+# @st.cache_resource
+# def init_connection():
+#     return mysql.connector.connect(**st.secrets["mysql"])
+# conn = init_connection()
+    
 st.title("ワンダーのアプリ")
 st.caption('これはテスト用で開発したWebアプリです。')
 st.subheader('環境構築')
 st.text('研究室でロボットを用いた自動溶接作業を開発しています')
+
 
 with st.form(key='profile_form'):
     name = st.text_input('名前')

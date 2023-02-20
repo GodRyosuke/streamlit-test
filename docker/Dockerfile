@@ -11,4 +11,4 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 RUN sudo apt-get upgrade -y && sudo apt-get update
 RUN pip install --upgrade pip
-RUN pip install streamlit
+RUN pip install streamlit mysql-connector-python

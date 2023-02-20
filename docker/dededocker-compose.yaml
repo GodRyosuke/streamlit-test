@@ -3,11 +3,11 @@ version: '3'
 networks: 
   python_network:
     driver: bridge
-    ipam:
-      driver: default
-      config:
-       - subnet: 192.168.2.0/24
-         gateway: 192.168.2.1
+    # ipam:
+    #   driver: default
+    #   config:
+    #    - subnet: 192.168.2.0/24
+    #    - gateway: 192.168.2.1
 
 services:
   db:
@@ -35,8 +35,8 @@ services:
     volumes:
       - "../db:/var/lib/mysql"
     networks:
-      python_network:
-        ipv4_address: 192.168.2.2    
+     - python_network
+        # ipv4_address: 192.168.2.2    
 
   asdf:
     # image: streamlit:wander
@@ -76,4 +76,4 @@ services:
     tty: true
     restart: always
     networks:
-     - python_network
+      - python_network

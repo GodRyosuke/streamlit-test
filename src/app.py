@@ -1,5 +1,8 @@
 import streamlit as st
 import mysql.connector
+import time
+
+
 
 # connection = connection = mysql.connector.connect(host='192.168.2.2',
 #                                                   user='wander',
@@ -19,24 +22,34 @@ def run_query(query):
 
 rows = run_query("SELECT * from pets;")
 
-# Print results.
-for row in rows:
-    st.write(f"{row[1]} has a :{row[2]}:")
+
     
 st.title("ワンダーのアプリ")
 st.caption('これはテスト用で開発したWebアプリです。')
 st.subheader('環境構築')
 st.text('研究室でロボットを用いた自動溶接作業を開発しています')
 
+import datetime
+
+dt_now = datetime.datetime.now()
+st.text(dt_now.strftime("%Y-%m-%d"))
+print(dt_now)
+
+# Print results.
+for row in rows:
+    st.text(f"{row[1]} has a :{row[2]}:")
 
 with st.form(key='profile_form'):
-    name = st.text_input('名前')
-    address = st.text_input("住所")
+    whatFor = st.text_input('何に使った？')
+    price = st.text_input("金額")
+    date = dt_now.strftime("%Y-%m-%d")
 
     submit_button = st.form_submit_button('送信')
     cancel_button = st.form_submit_button('キャンセル')
     if (submit_button):
-        st.text(f'ようこそ{name}さん！{address}が登録されました！')
+        st.text(f'ようこそ{whatFor}さん！{price}が登録されました！')
+        run_query(f"insert into HouseholdAccount (date, WhatFor, value) values ('{date}', '{whatFor}', {price});")
+        conn.commit()
 
 code = '''
 #include <iostream>
